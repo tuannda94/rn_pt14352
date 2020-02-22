@@ -100,10 +100,10 @@ export default function App() {
         style={myStyle.image}
       /> */}
         {/* Su dung component da import ben tren, truyen props sang duoi dang 1 thuoc tinh cua component */}
-        {contentText}
+        {/* {contentText} */}
         <Text>-------------------------</Text>
         {/* Cho cac ban giai dap */}
-        {
+        {/* {
           // Gia tri cac tham so nhan duoc se nam o ngoac thu 2
           ((contentFirst) => {
             const contentText = [];
@@ -121,7 +121,7 @@ export default function App() {
             return contentText;
           })
           (contentFirst)
-        }
+        } */}
         <Text>-------------------------</Text>
         {/* Sau khi tao ds thi se truyen sang cho component List duoi dang 1 props ten la data, gia tri la listUser */}
         <List data={listUser} />

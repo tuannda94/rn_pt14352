@@ -3,19 +3,22 @@ import { Text, View, Image, StyleSheet } from 'react-native';
 
 // Khi ten file la index.js thi ben import se chi can tro den thu muc
 // import xxx from './list' -> './list/index'
-export default function Row({ item }) {
+export default function Row({ item, show }) {
     return (
         // View nay dai dien cho 1 row
-        <View style={style.row}>
-            <View style={style.left}>
-                <Image source={{ uri: item.avatar }} style={style.image} />
+        (show == true) ? (
+            <View style={style.row}>
+                <View style={style.left}>
+                    <Image source={{ uri: item.avatar }} style={style.image} />
+                </View>
+                <View style={style.right}>
+                    <Text style={style.text}>{item.name}</Text>
+                    <Text style={style.text}>{item.address}</Text>
+                    <Text style={style.text}>{item.email}</Text>
+                </View>
             </View>
-            <View style={style.right}>
-                <Text style={style.text}>{item.name}</Text>
-                <Text style={style.text}>{item.address}</Text>
-                <Text style={style.text}>{item.email}</Text>
-            </View>
-        </View>
+        )
+        : null
     );
 }
 
