@@ -11,6 +11,7 @@ import ContentFirst from './content/content1';
 import SecondContent from './content/content2';
 import ThirdContent from './content/content3';
 import List from './list';
+import Profile from './profile';
 
 export default function App() {
   const content = 'FPT POLY';
@@ -101,7 +102,7 @@ export default function App() {
       /> */}
         {/* Su dung component da import ben tren, truyen props sang duoi dang 1 thuoc tinh cua component */}
         {/* {contentText} */}
-        <Text>-------------------------</Text>
+        {/* <Text>-------------------------</Text> */}
         {/* Cho cac ban giai dap */}
         {/* {
           // Gia tri cac tham so nhan duoc se nam o ngoac thu 2
@@ -122,9 +123,10 @@ export default function App() {
           })
           (contentFirst)
         } */}
-        <Text>-------------------------</Text>
+        {/* <Text>-------------------------</Text> */}
         {/* Sau khi tao ds thi se truyen sang cho component List duoi dang 1 props ten la data, gia tri la listUser */}
-        <List data={listUser} />
+        {/* <List data={listUser} /> */}
+        <Profile />
       </View>
     </ScrollView>
   );
