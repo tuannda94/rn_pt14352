@@ -125,7 +125,15 @@ export default function Profile() {
               <Picker.Item value="PT1113" label="PT1114" />
             </Picker>
             <Button
-              title="Cancle"
+              title="Submit"
+              onPress={() => {
+                handleAdd(),
+                setShowModal(false)
+              }}
+              
+            />
+            <Button
+              title="Cancel"
               onPress={() => {
                 setShowModal(false);
               }}
