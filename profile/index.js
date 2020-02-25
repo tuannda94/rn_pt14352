@@ -48,6 +48,27 @@ export default function Profile() {
     const [user, setUser] = useState(userProfile);
     // Tao state kiem soat viec hien thi cua modal add subject
     const [showModal, setShowModal] = useState(false);
+    
+    //khoi tao sate cho tung doi tuong
+    const [showModal, setShowModal] = useState(false);
+
+    const [addName, setAddName] = useState("");
+
+    const [addID, setAddID] = useState("");
+
+    const [addClass, setAddClass] = useState("");
+    
+    //ham them
+     const handleAdd = () => {
+      let newUser = user.subjects;
+
+      const addSubject = {
+        name: addName.toString(),
+        identity: addID.toString(),
+        className: addClass.toString(),
+      };
+      newUser = newUser.push(addSubject);
+    }
 
     // Khai bao ham thuc hien cong viec xoa
     const handleDeleteSubject = (identity) => {
@@ -94,11 +115,11 @@ export default function Profile() {
           <View>
             <Text>Modal Add Subject</Text>
             <Text>Name</Text>
-            <TextInput value="" onValueChange={() => {}} />
+            <TextInput value="Le Anh Tu" onChangeText={(valName) => setAddName(valName)}/>
             <Text>Identity</Text>
-            <TextInput value="MOBxxx" onValueChange={() => {}} />
+            <TextInput value="MOBxxx" onValueChange={(valID) => setAddID(valID)} />
             <Text>Select Class Name</Text>
-            <Picker selectedValue="PT1111" onValueChange={() => {}}>
+            <Picker selectedValue="PT1111" onValueChange={(valClass) => setAddClass(valClass)}>
               <Picker.Item value="PT1111" label="PT1111" />
               <Picker.Item value="PT1112" label="PT1112" />
               <Picker.Item value="PT1113" label="PT1114" />
