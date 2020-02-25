@@ -68,7 +68,7 @@ export default function Profile() {
 
   const [idee, setIde] = useState("");
 
-  const [nameClass, setNameClass] = useState("");
+  const [nameClass, setNameClass] = useState("PT1111");
 
   const addItem = () => {
     let newSubjectList = user.subjects;
@@ -123,7 +123,7 @@ export default function Profile() {
             <TextInput onChangeText={(valueIde) => setIde(valueIde)} />
 
             <Text>Select Class Name</Text>
-            <Picker selectedValue="PT1111" onValueChange={(valueNamClass) => setNameClass(valueNamClass)} >
+            <Picker selectedValue={nameClass} onValueChange={(valueNamClass) => setNameClass(valueNamClass)} >
               <Picker.Item value="PT1111" label="PT1111" />
               <Picker.Item value="PT1112" label="PT1112" />
               <Picker.Item value="PT1113" label="PT1113" />
