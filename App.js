@@ -1,158 +1,168 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
-  StyleSheet,
-  Text,
   View,
+  Text,
+  FlatList,
+  StyleSheet,
   Image,
-  ScrollView
+  Switch,
+  Modal,
+  Button,
+  TextInput,
+  Picker
 } from 'react-native';
-// Import component duoc tao ra o thu muc content
-import ContentFirst from './content/content1';
-import SecondContent from './content/content2';
-import ThirdContent from './content/content3';
-import List from './list';
-import Profile from './profile';
+import InfoText from './info-text';
+import SubjectItem from './subject-item';
 
-export default function App() {
-  const content = 'FPT POLY';
-
-  const gptb1 = (a, b) => {
-    if (a == 0 && b == 0) {
-      return('vo so nghiem');
-    }
-
-    if (a == 0 && b != 0) {
-      return('vo nghiem');
-    }
-
-    if (a != 0 && b != 0) {
-      return(-b / a);
-    }
-
-    if (a != 0 && b == 0) {
-      return(-b / a);
-    }
-  }
-
-  const valueGpt = gptb1(3, 4); // c1
-
-  const contentFirst = "CONTENT FIRST PT14352MOB POLY";
-  const contentSecond = "CONTENT SECOND PT14352MOB POLY";
-  const contentThird = "CONTENT THIRD PT14352MOB POLY";
-
-  const arrayContent = [
-    "CONTENT FIRST PT14352MOB POLY",
-    "CONTENT SECOND PT14352MOB POLY",
-    "CONTENT THIRD PT14352MOB POLY"
-  ];
-  // Do khong viet duoc truc tiep for ngay trong return jsx, chuyen phan noi dung ve 1 mang,
-  // hoac 1 ham return ve mang noi dung do
-
-  // Cach 1, truyen du lieu vao mang, su dung mang do o trong return
-  // Khai bao mang rong
-  const contentText = [];
-  // Thuc hien vong lap
-  for (let i = 0; i < 10; i++) {
-    // Kiem tra vi tri chan
-    if (i % 2 == 0) {
-      // Push component hien thi vao trong mang
-      contentText.push(<ContentFirst content={`${contentFirst} -> vi tri ${i}`} />);
-    }
-  }
-  // Khi ket thuc vong for, ta se co 1 mang gom cac phan thu la cac component hien thi
-
-  // Khai bao gia tri cho danh sach
-  // 1. Danh sach -> la array
-  // 2. Moi mot row se bao gom avatar, name, address, email
-  //     => moi item trong array se la 1 object co cac thuoc tinh nhu ben tren
-  const listUser = [
-    {
-      avatar: '',
+export default function Profile() {
+  let userProfile = {
+    info: {
+      avatar: 'https://iap.poly.edu.vn/user/ph/PH09025.jpg',
       name: 'Nguyen Van A',
-      address: 'Ha Noi',
-      email: 'a@gmail.com'
+      email: 'a@gmail.com',
+      address: 'HN',
+      phone: '0123456789',
+      active: true
     },
-    {
-      avatar: '',
-      name: 'Nguyen Van B',
-      address: 'Ha Noi',
-      email: 'b@gmail.com'
-    },
-    {
-      avatar: '',
-      name: 'Nguyen Van C',
-      address: 'Ha Noi',
-      email: 'c@gmail.com'
-    },
-    {
-      avatar: '',
-      name: 'Nguyen Thi D',
-      address: 'Ha Noi',
-      email: 'd@gmail.com'
-    },
-  ];
+    subjects: [
+      {
+        name: 'React Native',
+        identity: 'MOB306',
+        className: 'PT14352',
+      },
+      {
+        name: 'React Native',
+        identity: 'MOB307',
+        className: 'PT14352',
+      },
+      {
+        name: 'React Native',
+        identity: 'MOB308',
+        className: 'PT14352',
+      }
+    ]
+  };
 
+  // Khai bao state + ham thay doi gia tri cua no
+  const [showInfo, setShowInfo] = useState(true);
+  // Chuyen viec su dung userprofile sang state, de khi user thay doi gia tri se render lai man hinh
+  const [user, setUser] = useState(userProfile);
+  // Tao state kiem soat viec hien thi cua modal add subject
+  const [showModal, setShowModal] = useState(false);
+
+  // Khai bao ham thuc hien cong viec xoa
+  const handleDeleteSubject = (identity) => {
+    // su dung let de co the gan gia tri moi
+    let newSubjectList = user.subjects;
+    // filter ((item) => tra ve dieu kien ma item do se duoc xu ly)
+    // sau khi filter xong (chay het vong lap voi dieu kien dua ra) -> tra ve mang moi co cac item thoa man dk
+
+    newSubjectList = newSubjectList.filter((subject) => subject.identity != identity);
+    userProfile.subjects = newSubjectList;
+    setUser(userProfile);
+  }
+
+  const [nameSetter,setName]=useState("");
+  const [identitySetter,setIdentity]=useState("");
+  const [classNameSetter,setClassName]=useState("");
   return (
-    <ScrollView>
-      <View style={{ flex: 1, alignItems: "center", marginTop: 200 }}>
-        {/* <Text style={{color: 'red', fontSize: 60}}>{`Truong ten la: ${content}`}</Text>
-      <Image source={require('./PH11674.jpg')} />
-      <Image source={{ uri: 'https://iap.poly.edu.vn/logo.png'}}
-        style={myStyle.image}
-      /> */}
-        {/* Su dung component da import ben tren, truyen props sang duoi dang 1 thuoc tinh cua component */}
-        {/* {contentText} */}
-        {/* <Text>-------------------------</Text> */}
-        {/* Cho cac ban giai dap */}
-        {/* {
-          // Gia tri cac tham so nhan duoc se nam o ngoac thu 2
-          ((contentFirst) => {
-            const contentText = [];
-            // Thuc hien vong lap
-            for (let i = 0; i < 10; i++) {
-              // Kiem tra vi tri chan
-              if (i % 2 == 0) {
-                // Push component hien thi vao trong mang
-                contentText.push(
-                  <ContentFirst content={`${contentFirst} -> vi tri ${i} trong arrow function`} />
-                );
-              }
-            }
-
-            return contentText;
-          })
-          (contentFirst)
-        } */}
-        {/* <Text>-------------------------</Text> */}
-        {/* Sau khi tao ds thi se truyen sang cho component List duoi dang 1 props ten la data, gia tri la listUser */}
-        {/* <List data={listUser} /> */}
-        <Profile />
+    <View style={style.profileContainer}>
+      <View style={style.avatar}>
+        <Image style={style.image} source={{ uri: user.info.avatar }} />
+        <Switch
+          value={showInfo}
+          onValueChange={() => setShowInfo(!showInfo)}
+        />
       </View>
-    </ScrollView>
+      <Text>--------------</Text>
+      <View>
+        {showInfo ? <InfoText data={user.info} /> : null}
+        <Text>--------------</Text>
+        <Button
+          title="Add subject"
+          onPress={() => {
+            setShowModal(true);
+          }}
+        />
+        <FlatList
+          data={user.subjects} // mảng nhận vào để hiển thị danh sách
+          renderItem={({ item }) => (
+            <SubjectItem item={item} handleDelete={handleDeleteSubject} />
+          )} // item ứng với {name: '', identity: '', className: ''}
+          keyExtractor={(item,index) => index}
+        />
+      </View>
+      <Modal visible={showModal}>
+        <View>
+          <Text style={style.title}>Modal Add Subject</Text>
+          <TextInput style={style.inputLabel} placeholder="Name" onChangeText={(text) => setName(text)} />
+          <TextInput style={style.inputLabel} placeholder="Identity" onChangeText={(text) => setIdentity(text)} />
+          <Picker mode="dropdown" style={style.inputLabel} selectedValue={classNameSetter.toString()}  onValueChange={(itemValue, index) => {
+            setClassName(itemValue);
+          }}>
+            <Picker.Item value="PT1111" label="PT1111" />
+            <Picker.Item value="PT1112" label="PT1112" />
+            <Picker.Item value="PT1113" label="PT1113" />
+          </Picker>
+          <View style={style.btnParent}>
+            <View style={style.button}>
+              <Button
+                title="Cancle"
+                onPress={() => {
+                  setShowModal(false);
+                }}
+              />
+            </View>
+            <View style={style.button}>
+              <Button title="Submit" onPress={() => {
+                  const newSubject = {
+                  name:nameSetter.toString(),
+                  identity:identitySetter.toString(),
+                  className:classNameSetter.toString()
+                }
+                user.subjects.push(newSubject);
+                setUser(user);
+                setShowModal(false);
+              }} />
+            </View>
+          </View>
+        </View>
+      </Modal>
+    </View>
   );
 }
 
-const myStyle = StyleSheet.create(
-  {
-    app: {
-      backgroundColor: '#ccc',
-      fontSize: 30
-    },
-    text: {
-      color: '#fff'
-    },
-    image: {
-      width: 300,
-      height: 400
-    }
-  }
-);
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+const style = StyleSheet.create({
+  profileContainer: {},
+  avatar: {},
+  image: {
+    width: 200,
+    height: 200,
+    borderRadius: 200
   },
+  title: {
+    fontSize: 30,
+    textAlign: "center",
+    color: "white",
+    backgroundColor: "#00bcd4",
+    padding: 16
+  },
+  inputLabel: {
+    borderColor: "#00bcd4",
+    borderWidth: 1,
+    borderRadius: 10,
+    margin: 8,
+    height: 50,
+    paddingLeft: 8
+  },
+  btnParent: {
+    marginTop: 16,
+    flexDirection: "row"
+  },
+  button: {
+    margin: 8,
+    justifyContent:"space-around"
+  }
+
+
 });
