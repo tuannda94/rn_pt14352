@@ -15,6 +15,9 @@ import InfoText from './info-text';
 import SubjectItem from './subject-item';
 
 export default function Profile() {
+    let nameIP="a";
+    const identityIP="";
+    const valuePic="";
     const userProfile = {
         info: {
             avatar: 'https://iap.poly.edu.vn/user/ph/PH09025.jpg',
@@ -48,7 +51,10 @@ export default function Profile() {
     const [user, setUser] = useState(userProfile);
     // Tao state kiem soat viec hien thi cua modal add subject
     const [showModal, setShowModal] = useState(false);
-
+    // Tao state kiem soat viec thay doi value cua input text name
+    const [changeName, setChangeName] = useState("");
+    const [identity, setIdentity]=useState("");
+    const [valuepicker,setValuePicker]=useState("");
     // Khai bao ham thuc hien cong viec xoa
     const handleDeleteSubject = (identity) => {
         // su dung let de co the gan gia tri moi
@@ -62,7 +68,23 @@ export default function Profile() {
 
         setUser(userProfile);
     }
+    const onSave=()=>{
+    
+     
+    // su dung let de co the gan gia tri moi
+    let newSubjectList = user.subjects;
+    const object = {
+      name: changeName.toString(),
+      identity: identity.toString(),
+      className: valuepicker.toString(),
+  };
 
+
+    newSubjectList = newSubjectList.push(object);
+    // filter ((item) => tra ve dieu kien ma item do se duoc xu ly)
+    // sau khi filter xong (chay het vong lap voi dieu kien dua ra) -> tra ve mang moi co cac item thoa man dk
+   
+    }
     return (
       <View style={style.profileContainer}>
         <View style={style.avatar}>
@@ -94,15 +116,23 @@ export default function Profile() {
           <View>
             <Text>Modal Add Subject</Text>
             <Text>Name</Text>
-            <TextInput value="" onValueChange={() => {}} />
+            <TextInput onChangeText={(text)=>{setChangeName(text)}}  />
             <Text>Identity</Text>
-            <TextInput value="MOBxxx" onValueChange={() => {}} />
+            <TextInput    onChangeText={(text)=>{setIdentity(text)}} />
             <Text>Select Class Name</Text>
-            <Picker selectedValue="PT1111" onValueChange={() => {}}>
+            <Picker selectedValue={valuepicker} onValueChange={(value) => {setValuePicker(value)}}>
               <Picker.Item value="PT1111" label="PT1111" />
               <Picker.Item value="PT1112" label="PT1112" />
-              <Picker.Item value="PT1113" label="PT1114" />
+              <Picker.Item value="PT1113" label="PT1113" />
             </Picker>
+            
+            <Button
+              title="Lưu"
+              onPress={() => {
+               onSave(),
+               setShowModal(false);
+              }}
+            />
             <Button
               title="Cancle"
               onPress={() => {
