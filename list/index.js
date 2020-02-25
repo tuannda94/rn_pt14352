@@ -1,3 +1,5 @@
+// React hook -> cach dang su dung
+// React Class -> cach cu
 import React, {useState} from 'react'; // chu y viec import useState trong ngoac nhon
 import {Text, View, Image, StyleSheet, Switch} from 'react-native';
 import Row from './row';
@@ -9,7 +11,6 @@ import Row from './row';
 // import xxx from './list' -> './list/index'
 export default function List({data})
 {
-
     // Khai bao su dung state ngay ben duoi phan khai bao component
     // const [ten_state, ten_ham_su_dung_thay_doi_gia_tri_state] = useState(gia_tri_mac_dinh_cua_state);
     const [showList, setShowList] = useState(true);
@@ -20,8 +21,6 @@ export default function List({data})
 
     // useState(true): dinh nghia ra cap state va function thay doi gia tri state,
     // voi gia tri mac dinh cua showList = true
-
-    console.log(showList);
 
     // khi showList = true thi se hien thi danh sach, con false thi se an danh sach
     const renderRow = () => {
