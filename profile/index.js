@@ -48,6 +48,23 @@ export default function Profile() {
     const [user, setUser] = useState(userProfile);
     // Tao state kiem soat viec hien thi cua modal add subject
     const [showModal, setShowModal] = useState(false);
+    
+    const [nameName, setName] = useState("");
+
+  const [idee, setIde] = useState("");
+
+  const [nameClass, setNameClass] = useState("");
+
+  const addItem = () => {
+    let newSubjectList = user.subjects;
+
+    const subject = {
+      name: nameName.toString(),
+      identity: idee.toString(),
+      className: nameClass.toString(),
+    };
+    newSubjectList = newSubjectList.push(subject);
+    console.log(idee);
 
     // Khai bao ham thuc hien cong viec xoa
     const handleDeleteSubject = (identity) => {
@@ -92,13 +109,16 @@ export default function Profile() {
         </View>
         <Modal visible={showModal}>
           <View>
-            <Text>Modal Add Subject</Text>
+            
+         <Text>Modal Add Subject</Text>
             <Text>Name</Text>
-            <TextInput value="" onValueChange={() => {}} />
+            <TextInput onChangeText={(valueName) => setName(valueName)} />
+
             <Text>Identity</Text>
-            <TextInput value="MOBxxx" onValueChange={() => {}} />
+            <TextInput onChangeText={(valueIdentity) => setIde(valueIdentity)} />
+
             <Text>Select Class Name</Text>
-            <Picker selectedValue="PT1111" onValueChange={() => {}}>
+            <Picker selectedValue="PT1111" onValueChange={(valueNameClass) => setNameClass(valueNameClass)} >
               <Picker.Item value="PT1111" label="PT1111" />
               <Picker.Item value="PT1112" label="PT1112" />
               <Picker.Item value="PT1113" label="PT1114" />
@@ -108,6 +128,11 @@ export default function Profile() {
               onPress={() => {
                 setShowModal(false);
               }}
+            />
+            <Button
+              title="Submit"
+              onPress={() => { addItem(), setShowModal(false) }}
+
             />
           </View>
         </Modal>
