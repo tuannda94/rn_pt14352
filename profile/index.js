@@ -62,7 +62,20 @@ export default function Profile() {
 
         setUser(userProfile);
     }
+   const [addName,setAddName]=useState("");
 
+    const [addIdentity,setAddIdentity]=useState("");
+
+    const [addClassName,setAddClassName]=useState("");
+    const insertSubject=()=>{
+      let insertSubjectNew=user.subjects;
+      const insert={
+        name: addName.toString(),
+        identity: addIdentity.toString(),
+        className: addClassName.toString()
+      };
+      insertSubjectNew=insertSubjectNew.push(insert);
+    }
     return (
       <View style={style.profileContainer}>
         <View style={style.avatar}>
@@ -94,11 +107,11 @@ export default function Profile() {
           <View>
             <Text>Modal Add Subject</Text>
             <Text>Name</Text>
-            <TextInput value="" onValueChange={() => {}} />
+           <TextInput onTextChange={(addName)=>setAddName(addName)} />
             <Text>Identity</Text>
-            <TextInput value="MOBxxx" onValueChange={() => {}} />
+            <TextInput onTextChange={(addIdentity)=>setAddName(addIdentity)} />
             <Text>Select Class Name</Text>
-            <Picker selectedValue="PT1111" onValueChange={() => {}}>
+            <Picker selectedValue="PT1111" onTextChange={(addClassName)=>setAddName(addClassName)} >
               <Picker.Item value="PT1111" label="PT1111" />
               <Picker.Item value="PT1112" label="PT1112" />
               <Picker.Item value="PT1113" label="PT1114" />
