@@ -63,6 +63,34 @@ export default function Profile() {
         setUser(userProfile);
     }
 
+    // Khai bao state + ham thay doi gia tri cua modal them subject
+    const [inputSubjectName, setInputSubjectName] = useState('');
+    const [inputSubjectId, setInputSubjectId] = useState('');
+    const [pickerSubjectClass, setPickerSubjectClass] = useState("PT1111");
+
+    const setDefaultValue = () => {
+      setInputSubjectName('');
+      setInputSubjectId('');
+      setPickerSubjectClass('PT1111');
+    }
+    // Tao ham va xu ly viec add subject
+    const handleAddSubject = () => {
+      const newSubject = {
+        name: inputSubjectName,
+        identity: inputSubjectId,
+        className: pickerSubjectClass
+      };
+
+      let newSubjectList = user.subjects;
+      newSubjectList.push(newSubject);
+      userProfile.subjects = newSubjectList;
+
+      setUser(userProfile);
+      setShowModal(false);
+      setDefaultValue();
+    }
+
+    // console.log(user.subjects);
     return (
       <View style={style.profileContainer}>
         <View style={style.avatar}>
@@ -94,15 +122,16 @@ export default function Profile() {
           <View>
             <Text>Modal Add Subject</Text>
             <Text>Name</Text>
-            <TextInput value="" onValueChange={() => {}} />
+            <TextInput value={inputSubjectName} onChangeText={(value) => setInputSubjectName(value)} />
             <Text>Identity</Text>
-            <TextInput value="MOBxxx" onValueChange={() => {}} />
+            <TextInput value={inputSubjectId} onChangeText={(value) => setInputSubjectId(value)} />
             <Text>Select Class Name</Text>
-            <Picker selectedValue="PT1111" onValueChange={() => {}}>
+            <Picker selectedValue={pickerSubjectClass} onValueChange={(value) => setPickerSubjectClass(value)}>
               <Picker.Item value="PT1111" label="PT1111" />
               <Picker.Item value="PT1112" label="PT1112" />
               <Picker.Item value="PT1113" label="PT1114" />
             </Picker>
+            <Button title='Submit' onPress={() => {handleAddSubject()}} />
             <Button
               title="Cancle"
               onPress={() => {
