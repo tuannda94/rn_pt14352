@@ -1,7 +1,7 @@
 import React from 'react';
 import {View, Text, Button, StyleSheet, Alert} from 'react-native';
 
-export default function subjectItem({item, handleDelete}){
+export default function subjectItem({item, handleDelete, handleEdit}){
     const alertDelete = (identity, handleDelete) => {
         return Alert.alert(
             'Delete Subject', // tham so dau tien: title
@@ -29,6 +29,7 @@ export default function subjectItem({item, handleDelete}){
                 <Text>--------------</Text>
             </View>
             <View>
+                <Button title='EDIT' onPress={() => {handleEdit(item.identity)}} />
                 <Button title='DELETE' onPress={() => {alertDelete(item.identity, handleDelete)}}  />
             </View>
         </View>
