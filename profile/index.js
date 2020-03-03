@@ -68,13 +68,13 @@ export default function Profile() {
     const [inputSubjectId, setInputSubjectId] = useState('');
     const [pickerSubjectClass, setPickerSubjectClass] = useState("PT1111");
 
-    const setDefaultValue = () => {
-      setInputSubjectName('');
-      setInputSubjectId('');
-      setPickerSubjectClass('PT1111');
+    const setSubjectValue = (name, id, subjectClass) => {
+      setInputSubjectName(name);
+      setInputSubjectId(id);
+      setPickerSubjectClass(subjectClass);
     }
     // Tao ham va xu ly viec add subject
-    const handleAddSubject = () => {
+    const handleAddSubject = (isEdit) => {
       const newSubject = {
         name: inputSubjectName,
         identity: inputSubjectId,
@@ -82,12 +82,40 @@ export default function Profile() {
       };
 
       let newSubjectList = user.subjects;
-      newSubjectList.push(newSubject);
+      if (isEdit) {
+        // Update thong tin
+        const subjectEditIndex = newSubjectList.findIndex((subject) => subject.identity == inputSubjectId);
+        newSubjectList[subjectEditIndex] = newSubject;
+      } else {
+        newSubjectList.push(newSubject);
+      }
       userProfile.subjects = newSubjectList;
 
       setUser(userProfile);
       setShowModal(false);
-      setDefaultValue();
+      setSubjectValue('', '', 'PT1111');
+      setEditStatus(false);
+    }
+
+    // Khai bao state luu trang thai co dang edit hay khong
+    const [isEdit, setEditStatus] = useState(false);
+
+    // Tao ham xu ly viec edit 1 subject
+    const handleEditSubject = (identity) => {
+      // Set trang thai edit thanh true
+      setEditStatus(true);
+
+      // Lay thong tin cua subject can sua
+      const subject = user.subjects.find((subject) => subject.identity == identity);
+      // Hien thi thong tin subject o modal edit
+      setSubjectValue(subject.name, subject.identity, subject.className);
+      setShowModal(true);
+    };
+
+    const handleCloseModal = () => {
+      setShowModal(false);
+      setSubjectValue("", "", "PT1111");
+      setEditStatus(false);
     }
 
     // console.log(user.subjects);
@@ -113,7 +141,11 @@ export default function Profile() {
           <FlatList
             data={user.subjects} // mảng nhận vào để hiển thị danh sách
             renderItem={({ item }) => (
-              <SubjectItem item={item} handleDelete={handleDeleteSubject} />
+              <SubjectItem
+                item={item}
+                handleDelete={handleDeleteSubject}
+                handleEdit={handleEditSubject}
+              />
             )} // item ứng với {name: '', identity: '', className: ''}
             keyExtractor={(item, index) => index}
           />
@@ -122,20 +154,35 @@ export default function Profile() {
           <View>
             <Text>Modal Add Subject</Text>
             <Text>Name</Text>
-            <TextInput value={inputSubjectName} onChangeText={(value) => setInputSubjectName(value)} />
+            <TextInput
+              value={inputSubjectName}
+              onChangeText={value => setInputSubjectName(value)}
+            />
             <Text>Identity</Text>
-            <TextInput value={inputSubjectId} onChangeText={(value) => setInputSubjectId(value)} />
+            <TextInput
+              editable={!isEdit}
+              value={inputSubjectId}
+              onChangeText={value => setInputSubjectId(value)}
+            />
             <Text>Select Class Name</Text>
-            <Picker selectedValue={pickerSubjectClass} onValueChange={(value) => setPickerSubjectClass(value)}>
+            <Picker
+              selectedValue={pickerSubjectClass}
+              onValueChange={value => setPickerSubjectClass(value)}
+            >
               <Picker.Item value="PT1111" label="PT1111" />
               <Picker.Item value="PT1112" label="PT1112" />
               <Picker.Item value="PT1113" label="PT1114" />
             </Picker>
-            <Button title='Submit' onPress={() => {handleAddSubject()}} />
+            <Button
+              title="Submit"
+              onPress={() => {
+                handleAddSubject(isEdit);
+              }}
+            />
             <Button
               title="Cancle"
               onPress={() => {
-                setShowModal(false);
+                handleCloseModal();
               }}
             />
           </View>
