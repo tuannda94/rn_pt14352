@@ -1,5 +1,6 @@
 {
   "expo": {
+    "entryPoint": "./index.js",
     "name": "PT14352",
     "slug": "rn_pt14352",
     "privacy": "public",
