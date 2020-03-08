@@ -1,7 +1,12 @@
+import React from "react";
+import { StyleSheet, Text, View, Image, ScrollView } from "react-native";
+import Expo from "expo";
 import React, {useState, useEffect} from 'react';
 import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput} from 'react-native';
 import {registerRootComponent} from 'expo'; // higherOrder component
 
+class App extends React.Component {
+  const content = "FPT POLY";
 function App() {
     const [subjects, setSubjects] = useState([]);
     const [showList, setShowList] = useState(true);
@@ -13,6 +18,9 @@ function App() {
     const [identity, setIdentity] = useState('');
     const [isUpdate, setIsUpdate] = useState(false);
 
+  const gptb1 = (a, b) => {
+    if (a == 0 && b == 0) {
+      return "vo so nghiem";
     const API = 'https://5e5a60986a71ea0014e61d88.mockapi.io/api/subjects';
     // Dinh nghia ham xu ly cong viec call API
     const fetchSubjects = () => {
@@ -58,6 +66,8 @@ function App() {
         .catch((error) => console.log(error));
     }
 
+    if (a == 0 && b != 0) {
+      return "vo nghiem";
     const setModalData = (data) => {
         setClassName(data.className);
         setSubjectName(data.name);
@@ -66,12 +76,16 @@ function App() {
         setIsUpdate(data.id); // set isUpdate = id -> neu co id thi se hieu la true, con k co id thi se la undefined -> hieu la false
     }
 
+    if (a != 0 && b != 0) {
+      return -b / a;
     const handleAddSubject = (responseJson) => {
         const newSubjects = [...subjects]; // clone subjects, neu clone object -> {...subject}
 
         return newSubjects.push(responseJson); // return de gan gia tri duoi phan then
     }
 
+    if (a != 0 && b == 0) {
+      return -b / a;
     const handleUpdateSubject = (responseJson) => {
         const newSubjects = [...subjects];
         // Tim vi tri item bi thay doi
@@ -81,6 +95,28 @@ function App() {
 
         return newSubjects;
     }
+  };
+
+  const valueGpt = gptb1(3, 4); // c1
+
+  return (
+    // <View style={myStyle.app}>
+    //   <Text style={myStyle.text}>{content}</Text>
+    //   <Text>{valueGpt}</Text>
+    //   <Text>{gptb1(5, 0)}</Text>
+    //   <Text>hello poly pt14352-MOB</Text>
+    // </View>
+    <ScrollView>
+        <Text>123123123</Text>
+      <View style={{ flex: 1, alignItems: "center", marginTop: 200 }}>
+        <Text
+          style={{ color: "red", fontSize: 60 }}
+        >{`Truong ten la: ${content}`}</Text>
+        <Image source={require("./PH11674.jpg")} />
+        <Image
+          source={{ uri: "https://iap.poly.edu.vn/logo.png" }}
+          style={myStyle.image}
+        />
 
     const handleSubmit = () => {
         // 1. Hien thi loading va an modal sau khi press submit
@@ -194,10 +230,33 @@ function App() {
           />
         ) : null}
       </View>
+    </ScrollView>
+  );
+}
+
+const myStyle = StyleSheet.create({
+  app: {
+    backgroundColor: "#ccc",
+    fontSize: 30
+  },
+  text: {
+    color: "#fff"
+  },
+  image: {
+    width: 300,
+    height: 400
+  }
+});
     );
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center"
+  }
     container: {
         marginTop: 100,
         flex: 1,
@@ -211,4 +270,5 @@ const styles = StyleSheet.create({
     }
 });
 
+export default Expo.registerRootComponent(App);
 export default registerRootComponent(App);
