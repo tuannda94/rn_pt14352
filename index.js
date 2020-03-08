@@ -11,8 +11,10 @@ function App() {
     const [subjectName, setSubjectName] = useState('');
     const [logoURL, setLogoURL] = useState('');
     const [identity, setIdentity] = useState('');
-    const [isUpdate, setIsUpdate] = useState(false);
-
+    const [id, setId] = useState('');
+    const [ isUpdate, setIsUpdate] = useState(false);
+    const [isDetail,setIsDeail] =useState(false);
+    const [showDetailModal,setShowDetailModal] = useState(false);
     const API = 'https://5e5a60986a71ea0014e61d88.mockapi.io/api/subjects';
     // Dinh nghia ham xu ly cong viec call API
     const fetchSubjects = () => {
@@ -131,7 +133,7 @@ function App() {
             logo: '',
             identity: ''
         });
-    }
+    }   
 
     const showEditModal = (id) => {
         const subject = subjects.find((item) => item.id == id);
@@ -139,9 +141,33 @@ function App() {
         setModalData(subject);
         setShowModal(true);
     }
-
+    const  showDetailModall =(id) => {
+        return fetch(
+            API+"/"+id
+        ).then((response)=>response.json())
+        .then((responseJson)=>
+        {setShowDetailModal(true);
+         setSubject(responseJson);
+        })
+        .catch((error)=>console.error(error))
+       
+    }
     const handleCancle = () => {
         setShowModal(false);
+    }
+    const handleCancleDetail = () => {
+        setShowDetailModal(false);
+    }
+
+    
+
+    const setSubject=(response)=>{
+        setClassName(response.className);
+        setSubjectName(response.name);
+        setLogoURL(response.logo);
+        setIdentity(response.identity);
+        setIsUpdate(response.id);
+        setId(response.id)
     }
 
     return (
@@ -186,6 +212,7 @@ function App() {
                 <Text>{item.name}</Text>
                 <Text>{item.className}</Text>
                 <Image style={styles.logo} source={{ uri: item.logo }} />
+                <Button title='DETAIL' onPress={() => showDetailModall(item.id)} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
               </View>
@@ -193,6 +220,29 @@ function App() {
             keyExtractor={(item, index) => item.id}
           />
         ) : null}
+
+        <Modal visible={showDetailModal}>
+            <View style={styles.detail_modal}>
+            <View   >
+                        <Image  source={{uri:logoURL}} />
+                    </View>
+                    <View>
+                        <View >
+                            <Text >ID: {id}</Text>
+                        </View>
+                        <View>
+                            <Text >CLASSNAME: {className}</Text>
+                        </View>
+                        <View>
+                            <Text >SUBJECTNAME: {subjectName}</Text>
+                        </View>
+                        <View>
+                            <Text >IDENTITY: {identity}</Text>
+                        </View> 
+                    </View>
+                <Button style={styles.modal_detail} title='BACK' onPress={() => handleCancleDetail()} />
+            </View>
+        </Modal>
       </View>
     );
 };
@@ -208,6 +258,13 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 50
+    },
+    modal_detail:{
+        top:100
+    },
+    detail_modal:{
+        alignItems:'center',
+        margin:20
     }
 });
 
