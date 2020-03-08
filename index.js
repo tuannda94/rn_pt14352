@@ -1,17 +1,19 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput, TouchableOpacity} from 'react-native';
 import {registerRootComponent} from 'expo'; // higherOrder component
 
-function App() {
+function App({item}) {
     const [subjects, setSubjects] = useState([]);
     const [showList, setShowList] = useState(true);
     const [showLoading, setShowLoading] = useState(false);
-    const [showModal, setShowModal] = useState(false);
+    const [showModal, setShowModal] = useState(false);    
     const [className, setClassName] = useState('');
     const [subjectName, setSubjectName] = useState('');
     const [logoURL, setLogoURL] = useState('');
     const [identity, setIdentity] = useState('');
     const [isUpdate, setIsUpdate] = useState(false);
+    const [showModals, setShowModals] = useState(false);    
+
 
     const API = 'https://5e5a60986a71ea0014e61d88.mockapi.io/api/subjects';
     // Dinh nghia ham xu ly cong viec call API
@@ -144,6 +146,16 @@ function App() {
         setShowModal(false);
     }
 
+    const showDetail = (item) => {
+        let newData = fetch(
+                API,
+                {},
+            ).then(() => fetchSubjects());
+            setModalData(subjects);
+            setShowModals(true);
+            console.log(newData);
+    }
+
     return (
       <View style={styles.container}>
         <Text>List subject</Text>
@@ -182,22 +194,47 @@ function App() {
             renderItem={({ item }) => (
               <View>
                 <Text>{item.id}</Text>
-                <Text>{item.identity}</Text>
-                <Text>{item.name}</Text>
                 <Text>{item.className}</Text>
+                <Text>{item.name}</Text>
+                <Text>{item.identity}</Text>
                 <Image style={styles.logo} source={{ uri: item.logo }} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
+                <Button title="DETAIL" onPress={() =>  showDetail(item.id)} />
+
               </View>
             )}
             keyExtractor={(item, index) => item.id}
           />
         ) : null}
+
+            <Modal visible = {showModals}>
+            <View  style={styles.viewModal}>
+            <Text style={styles.txt} >{subjects.name}</Text>
+                <View>
+                    <Button  title = "Back" style={styles.btn} onPress={() => setShowModals(false)} />
+                </View>
+            </View>
+            </Modal>
       </View>
+
+
     );
 };
 
 const styles = StyleSheet.create({
+    txt:{
+        fontSize:0,
+    },
+    btn: {
+        borderWidth:1,
+        height:50,
+        width:"100%",
+    },
+    viewModal: {
+        justifyContent:'center',
+        flex:1,
+    },
     container: {
         marginTop: 100,
         flex: 1,
