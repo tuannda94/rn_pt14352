@@ -1,11 +1,17 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList, Image, Switch, Button} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput} from 'react-native';
 import {registerRootComponent} from 'expo'; // higherOrder component
 
 function App() {
     const [subjects, setSubjects] = useState([]);
     const [showList, setShowList] = useState(true);
     const [showLoading, setShowLoading] = useState(false);
+    const [showModal, setShowModal] = useState(false);
+    const [className, setClassName] = useState('');
+    const [subjectName, setSubjectName] = useState('');
+    const [logoURL, setLogoURL] = useState('');
+    const [identity, setIdentity] = useState('');
+    const [isUpdate, setIsUpdate] = useState(false);
 
     const API = 'https://5e5a60986a71ea0014e61d88.mockapi.io/api/subjects';
     // Dinh nghia ham xu ly cong viec call API
@@ -52,7 +58,91 @@ function App() {
         .catch((error) => console.log(error));
     }
 
-    // console.log(subjects);
+    const setModalData = (data) => {
+        setClassName(data.className);
+        setSubjectName(data.name);
+        setLogoURL(data.logo);
+        setIdentity(data.identity);
+        setIsUpdate(data.id); // set isUpdate = id -> neu co id thi se hieu la true, con k co id thi se la undefined -> hieu la false
+    }
+
+    const handleAddSubject = (responseJson) => {
+        const newSubjects = [...subjects]; // clone subjects, neu clone object -> {...subject}
+
+        return newSubjects.push(responseJson); // return de gan gia tri duoi phan then
+    }
+
+    const handleUpdateSubject = (responseJson) => {
+        const newSubjects = [...subjects];
+        // Tim vi tri item bi thay doi
+        const updateSubjectIndex = newSubjects.findIndex(item => item.id = responseJson.id);
+        // Gan item moi cho vi tri do trong array
+        newSubjects[updateSubjectIndex] = responseJson;
+
+        return newSubjects;
+    }
+
+    const handleSubmit = () => {
+        // 1. Hien thi loading va an modal sau khi press submit
+        setShowLoading(true);
+        setShowModal(false);
+        // 2. Khai bao subject duoc them moi kem key value
+        const subject = {
+            className: className,
+            name: subjectName,
+            logo: logoURL,
+            identity: identity
+        };
+        // const subject = {
+        //     className,
+        //     name: subjectName,
+        //     logo: logoURL,
+        //     identity
+        // };
+        // 3. Call API de them subject vao db tren server
+        const api = isUpdate ? `${API}/${isUpdate}` : API;
+        fetch(
+            api,
+            {
+                method: isUpdate ? 'PUT' : 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify(subject)
+            }
+        ).then((response) => response.json())
+        .then((responseJson) => {
+            let newSubjects = [];
+            if (isUpdate) {
+                newSubjects = handleUpdateSubject(responseJson);
+            } else {
+                newSubjects = handleAddSubject(responseJson);
+            }
+
+            setSubjects(newSubjects);
+            setShowLoading(false);
+        })
+        .catch((error) => console.log(`ERROR: ${error}`));
+
+        setModalData({
+            className: '',
+            name: '',
+            logo: '',
+            identity: ''
+        });
+    }
+
+    const showEditModal = (id) => {
+        const subject = subjects.find((item) => item.id == id);
+
+        setModalData(subject);
+        setShowModal(true);
+    }
+
+    const handleCancle = () => {
+        setShowModal(false);
+    }
 
     return (
       <View style={styles.container}>
@@ -63,6 +153,29 @@ function App() {
                 ? <Text>LOADING...</Text>
                 : null
         }
+        <Button title='ADD SUBJECT' onPress={() => setShowModal(true)} />
+        <Modal visible={showModal} >
+            <View>
+                <Text>Class Name</Text>
+                <TextInput value={className} onChangeText={(value) => setClassName(value)} />
+            </View>
+            <View>
+                <Text>Subject Name</Text>
+                <TextInput value={subjectName} onChangeText={(value) => setSubjectName(value)} />
+            </View>
+            <View>
+                <Text>Logo (Input Image URL)</Text>
+                <TextInput value={logoURL} onChangeText={(value) => setLogoURL(value)} />
+            </View>
+            <View>
+                <Text>identity</Text>
+                <TextInput value={identity} onChangeText={(value) => setIdentity(value)} />
+            </View>
+            <View>
+                <Button title='SUBMIT' onPress={() => handleSubmit()} />
+                <Button title='CANCLE' onPress={() => handleCancle()} />
+            </View>
+        </Modal>
         {showList ? (
           <FlatList
             data={subjects}
@@ -73,6 +186,7 @@ function App() {
                 <Text>{item.name}</Text>
                 <Text>{item.className}</Text>
                 <Image style={styles.logo} source={{ uri: item.logo }} />
+                <Button title='EDIT' onPress={() => showEditModal(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
               </View>
             )}
