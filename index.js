@@ -302,6 +302,12 @@ const styles = StyleSheet.create({
         fontSize: 16,
         textTransform: 'uppercase',
         color: '#FFFFFF',
+    },
+    
+    text1: {
+        fontSize: 16,
+        textTransform: 'uppercase',
+        color: '#FFFFFF',
     }
 });
 
