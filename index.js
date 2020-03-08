@@ -81,6 +81,15 @@ function App() {
 
         return newSubjects;
     }
+     const handleDetail = (id) => {
+
+        fetch(
+            `${API}/${id}`,
+            { method: 'GET' }
+        ).then((response) => { response.json() })
+            .then((responseJson) => setSubject(responseJson))
+            .catch((error) => console.log(error));
+    }
 
     const handleSubmit = () => {
         // 1. Hien thi loading va an modal sau khi press submit
@@ -174,6 +183,7 @@ function App() {
             <View>
                 <Button title='SUBMIT' onPress={() => handleSubmit()} />
                 <Button title='CANCLE' onPress={() => handleCancle()} />
+                    
             </View>
         </Modal>
         {showList ? (
@@ -188,11 +198,28 @@ function App() {
                 <Image style={styles.logo} source={{ uri: item.logo }} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
+           <Button title="DETAIL" onPress={() => { setShowModal(true) ,handleDetail(id) }} />
               </View>
             )}
             keyExtractor={(item, index) => item.id}
           />
         ) : null}
+  <Modal visible={showModal}>
+                <View>
+                    <View>
+                        <Text> {`id :${name}`} </Text>
+                        <Text> {`id :${identity}`} </Text>
+                        <Text> {`id :${name}`} </Text>
+                        <Text> {`id :${className}`} </Text>
+                        {/* <Text> {`id :${naclassNameme}`} </Text> */}
+
+
+                    </View>
+                    <View>
+                        <Button title='back' onPress={() => { setShowModal(false) }} />
+                    </View>
+                </View>
+            </Modal>
       </View>
     );
 };
