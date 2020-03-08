@@ -3,6 +3,7 @@ import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInpu
 import {registerRootComponent} from 'expo'; // higherOrder component
 
 function App() {
+     const [showDETAIL, setShowDETAIL] = useState(false);
     const [subjects, setSubjects] = useState([]);
     const [showList, setShowList] = useState(true);
     const [showLoading, setShowLoading] = useState(false);
@@ -187,11 +188,30 @@ function App() {
                 <Text>{item.className}</Text>
                 <Image style={styles.logo} source={{ uri: item.logo }} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
-                <Button title="DELETE" onPress={() => handleDelete(item.id)} />
+                <Button title="DELETE" onPress={() => handleDelete(item.id)} />  
+                <Button title="Chi tiết" onPress={() => setShowDETAIL(true)} />
               </View>
             )}
             keyExtractor={(item, index) => item.id}
           />
+        ) : null}
+ <Modal visible={showDETAIL}>
+          <FlatList
+            data={subjects}
+            renderItem={({ item }) => (
+              <View>
+                <Text>{item.id}</Text>
+                <Text>{item.identity}</Text>
+                <Text>{item.name}</Text>
+                <Text>{item.className}</Text>
+                <Image style={styles.logo} source={{ uri: item.logo }} />
+                <Button title='CANCLE' onPress={() => handleCancle()} />
+              
+              </View>
+            )}
+            keyExtractor={(item, index) => item.id}
+          />
+                 </Modal>
         ) : null}
       </View>
     );
