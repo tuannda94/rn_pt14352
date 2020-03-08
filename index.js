@@ -1,6 +1,7 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal,Dimensions, TextInput,TouchableOpacity,ImageBackground} from 'react-native';
 import {registerRootComponent} from 'expo'; // higherOrder component
+const { width: WIDTH } = Dimensions.get('window')
 
 function App() {
     const [subjects, setSubjects] = useState([]);
@@ -11,7 +12,9 @@ function App() {
     const [subjectName, setSubjectName] = useState('');
     const [logoURL, setLogoURL] = useState('');
     const [identity, setIdentity] = useState('');
+    const [id, setId] = useState('');
     const [isUpdate, setIsUpdate] = useState(false);
+    const [showModalDetail, setShowModalDetail] = useState(false);
 
     const API = 'https://5e5a60986a71ea0014e61d88.mockapi.io/api/subjects';
     // Dinh nghia ham xu ly cong viec call API
@@ -43,6 +46,26 @@ function App() {
     const deleteSubject = (id) => {
         const newSubject = subjects.filter(item => item.id != id);
         setSubjects(newSubject);
+    }
+
+    const showDetailAPI=(id)=>{
+        return fetch(
+            API+"/"+id
+        ).then((response)=>response.json())
+        .then((responseJson)=>
+        {setShowModalDetail(true);
+         setSubject(responseJson);
+        console.log(responseJson)})
+        .catch((error)=>console.error(error))
+    }
+
+    const setSubject=(response)=>{
+        setClassName(response.className);
+        setSubjectName(response.name);
+        setLogoURL(response.logo);
+        setIdentity(response.identity);
+        setIsUpdate(response.id);
+        setId(response.id)
     }
 
     const handleDelete = (id) => {
@@ -140,6 +163,8 @@ function App() {
         setShowModal(true);
     }
 
+
+
     const handleCancle = () => {
         setShowModal(false);
     }
@@ -154,6 +179,43 @@ function App() {
                 : null
         }
         <Button title='ADD SUBJECT' onPress={() => setShowModal(true)} />
+        <Modal visible={showModalDetail}>
+            <ImageBackground source={{uri:"https://i.9mobi.vn/cf/Images/ma/2019/2/27/hinh-nen-dien-thoai-xiaomi-dep-14.jpg"}} style={{width: '100%', height: '100%'}}>
+                <View style={styles.container_detail}>
+                    <View style={styles.image} >
+                        <Image style={styles.image} source={{uri:logoURL}} />
+                    </View>
+                    <View>
+                        <View >
+                            <Text style={styles.textDetail}>ID: {id}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.textDetail}>CLASSNAME: {className}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.textDetail}>SUBJECTNAME: {subjectName}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.textDetail}>IDENTITY: {identity}</Text>
+                        </View> 
+                    </View>
+               
+                    <View style={styles.containerButton}>
+                        <TouchableOpacity disabled={false}  
+                                    onPress={
+                                        ()=>setShowModalDetail(false)
+                                    }
+                                    style={[styles.btnLogin]}>
+                                <Text style={[styles.txtLogin]}>Back</Text>
+
+                        </TouchableOpacity>
+                    </View>
+               </View>
+            </ImageBackground>
+
+        </Modal>
+
+
         <Modal visible={showModal} >
             <View>
                 <Text>Class Name</Text>
@@ -188,6 +250,7 @@ function App() {
                 <Image style={styles.logo} source={{ uri: item.logo }} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
+                <Button title="DETAIL" onPress={() =>  showDetailAPI(item.id)} />
               </View>
             )}
             keyExtractor={(item, index) => item.id}
@@ -205,9 +268,41 @@ const styles = StyleSheet.create({
         justifyContent: 'center'
     },
     logo: {
-        width: 50,
-        height: 50,
+        width: 70,
+        height: 70,
         borderRadius: 50
+    },
+    btnLogin: {
+      width: WIDTH - 55,
+      height: 45,
+      borderRadius: 25,
+      backgroundColor: '#1E90FF',
+      justifyContent: 'center',
+      marginTop: 40
+    },
+    image:{   
+        // flex: 1,
+        // aspectRatio: 1.5, 
+        // resizeMode: 'contain',
+        borderRadius:50,
+        width:120,
+        height:120
+    },
+    container_detail:{
+        width:'100%',
+        height:'100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    textDetail:{
+        color:'#ffffff',
+        padding:12,
+        fontSize:15
+    },
+    txtLogin: {
+      fontSize: 16,
+      textAlign: 'center',
+      color: 'rgba(255, 255, 255, 1.0)'
     }
 });
 
