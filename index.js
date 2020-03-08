@@ -7,14 +7,16 @@ function App() {
     const [showList, setShowList] = useState(true);
     const [showLoading, setShowLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
+    const [showDetail, setShowDetail] = useState(false);
     const [className, setClassName] = useState('');
     const [subjectName, setSubjectName] = useState('');
     const [logoURL, setLogoURL] = useState('');
     const [identity, setIdentity] = useState('');
     const [isUpdate, setIsUpdate] = useState(false);
-
+    const [id, setId] = useState('');
     const API = 'https://5e5a60986a71ea0014e61d88.mockapi.io/api/subjects';
     // Dinh nghia ham xu ly cong viec call API
+   
     const fetchSubjects = () => {
         return fetch(
             API, // api
@@ -82,6 +84,7 @@ function App() {
         return newSubjects;
     }
 
+
     const handleSubmit = () => {
         // 1. Hien thi loading va an modal sau khi press submit
         setShowLoading(true);
@@ -132,6 +135,26 @@ function App() {
             identity: ''
         });
     }
+    const handleDetail = (id) => {
+        return fetch(
+            API+"/"+id
+        ).then((response)=>response.json())
+        .then((responseJson)=>
+        {setShowModalDetail(true);
+         setSubject(responseJson);
+        console.log(responseJson)})
+        .catch((error)=>console.error(error))
+
+    
+    }
+    const setSubject=(response)=>{
+        setClassName(response.className);
+        setSubjectName(response.name);
+        setLogoURL(response.logo);
+        setIdentity(response.identity);
+        setIsUpdate(response.id);
+        setId(response.id)
+    }
 
     const showEditModal = (id) => {
         const subject = subjects.find((item) => item.id == id);
@@ -142,6 +165,7 @@ function App() {
 
     const handleCancle = () => {
         setShowModal(false);
+        setShowDetail(false);
     }
 
     return (
@@ -176,6 +200,48 @@ function App() {
                 <Button title='CANCLE' onPress={() => handleCancle()} />
             </View>
         </Modal>
+        <Modal visible={showDetail} >
+            <View>
+                <Text>Class Name</Text>
+                <TextInput value={className} onChangeText={(value) => setClassName(value)} />
+            </View>
+            <View>
+                <Text>Subject Name</Text>
+                <TextInput value={subjectName} onChangeText={(value) => setSubjectName(value)} />
+            </View>
+            <View>
+                <Text>Logo (Input Image URL)</Text>
+                <TextInput value={logoURL} onChangeText={(value) => setLogoURL(value)} />
+            </View>
+            <View>
+                <Text>identity</Text>
+                <TextInput value={identity} onChangeText={(value) => setIdentity(value)} />
+            </View>
+            <View>
+               
+                <Button title='CANCLE' onPress={() => handleCancle()} />
+            </View>
+            <View style={style.colum}>
+                    <View style={style.viewboder1} >
+                        < Image style={style.imgmodel} source={{ uri: item.img }} />
+                    </View>
+                    <View style={style.item1} >
+                        <View  >
+                            <Text style={style.h1}>{`ID: ${id}`}</Text>
+                            <Text style={style.h2}>{`CLASSNAME: ${className}`}</Text>
+                            <Text style={style.h2}>{`SUBJECTNAME: ${subjectName}`}</Text>
+                            <Text style={style.h2}>{`IDENTITY: ${identity}`}</Text>
+                   
+                        </View>
+
+                        <TouchableHighlight
+                            style={style.submit}
+                            onPress={() => { handleCancle()}}>
+                            <Text style={style.submitText}>Not detail</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
+        </Modal>
         {showList ? (
           <FlatList
             data={subjects}
@@ -188,6 +254,7 @@ function App() {
                 <Image style={styles.logo} source={{ uri: item.logo }} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
+                <Button title="DETAIL" onPress={() => handleDetail(item.id)} />
               </View>
             )}
             keyExtractor={(item, index) => item.id}
@@ -209,6 +276,115 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 50
     }
+});
+const style = StyleSheet.create({
+    colum: {
+        justifyContent: "center",
+        flex: 1,
+
+        flexDirection: 'column',
+        backgroundColor: 'white',
+
+        borderColor: "#00bcd4",
+        marginTop: 20
+
+
+    }, solid: {
+        height: 1,
+        backgroundColor: "#00bcd4"
+    },
+    row: {
+        flex: 1,
+
+
+        flexDirection: "row",
+        backgroundColor: 'white',
+
+        borderColor: "#00bcd4"
+
+    }, viewboder: {
+
+
+        padding: 10,
+        backgroundColor: "#ffff",
+        borderRadius: 2,
+        borderWidth: 1,
+        borderColor: '#00bcd4',
+        marginBottom: 20
+
+    },
+    viewboder1: {
+
+
+        padding: 10,
+        backgroundColor: "#ffff",
+        borderRadius: 2,
+        borderWidth: 1,
+        borderColor: '#00bcd4',
+        marginBottom: 20
+
+    }
+    , image: {
+
+
+        padding: 10,
+
+        width: 80,
+        height: 100,
+        borderRadius: 2
+    },
+    h1: {
+        padding: 5,
+        fontSize: 20,
+
+    },
+    h2: {
+        marginLeft: 5,
+        padding: 5,
+    },
+    submit: {
+        overflow: 'hidden',
+
+
+        marginTop: 13,
+        padding: 10,
+        backgroundColor: '#00bcd4',
+        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ffff"
+    },
+    submitText: {
+        color: '#fff',
+        textAlign: 'center',
+    }, item1: {
+        flex: 1,
+        flexDirection: "column",
+        flexGrow: 1
+    }, item: {
+
+    },
+    row2: {
+        marginTop: 50,
+
+        display: "flex",
+        borderRadius: 5,
+
+        flexDirection: 'row',
+        backgroundColor: 'white',
+
+        borderColor: "#00bcd4"
+
+    },
+    imgmodel: {
+
+        margin: 10,
+        padding: 10,
+        marginBottom: 10,
+        width: 175,
+        height: 300,
+        borderRadius: 1
+    }
+
 });
 
 export default registerRootComponent(App);
