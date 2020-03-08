@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput,TouchableOpacity,ImageBackground} from 'react-native';
 import {registerRootComponent} from 'expo'; // higherOrder component
 
 function App() {
@@ -11,7 +11,9 @@ function App() {
     const [subjectName, setSubjectName] = useState('');
     const [logoURL, setLogoURL] = useState('');
     const [identity, setIdentity] = useState('');
+    const [id, setId] = useState('');
     const [isUpdate, setIsUpdate] = useState(false);
+    const [showModalDetail, setShowModalDetail] = useState(false);
 
     const API = 'https://5e5a60986a71ea0014e61d88.mockapi.io/api/subjects';
     // Dinh nghia ham xu ly cong viec call API
@@ -43,6 +45,17 @@ function App() {
     const deleteSubject = (id) => {
         const newSubject = subjects.filter(item => item.id != id);
         setSubjects(newSubject);
+    }
+
+
+
+    const setSubject=(response)=>{
+        setClassName(response.className);
+        setSubjectName(response.name);
+        setLogoURL(response.logo);
+        setIdentity(response.identity);
+        setIsUpdate(response.id);
+        setId(response.id)
     }
 
     const handleDelete = (id) => {
@@ -135,13 +148,25 @@ function App() {
 
     const showEditModal = (id) => {
         const subject = subjects.find((item) => item.id == id);
-
         setModalData(subject);
         setShowModal(true);
     }
 
+
+
     const handleCancle = () => {
         setShowModal(false);
+    }
+
+    const getItem=(id)=>{
+        return fetch(
+            API+"/"+id
+        ).then((response)=>response.json())
+        .then((responseJson)=>
+        {setShowModalDetail(true);
+         setSubject(responseJson);
+        console.log(responseJson)})
+        .catch((error)=>console.error(error))
     }
 
     return (
@@ -154,6 +179,8 @@ function App() {
                 : null
         }
         <Button title='ADD SUBJECT' onPress={() => setShowModal(true)} />
+       
+
         <Modal visible={showModal} >
             <View>
                 <Text>Class Name</Text>
@@ -176,6 +203,42 @@ function App() {
                 <Button title='CANCLE' onPress={() => handleCancle()} />
             </View>
         </Modal>
+
+        <Modal visible={showModalDetail}>
+           
+           <View style={styles.detail}>
+               <View style={styles.image} >
+                   <Image style={styles.image} source={{uri:logoURL}} />
+               </View>
+               <View>
+                   <View >
+                       <Text style={styles.textDetail}>ID: {id}</Text>
+                   </View>
+                   <View>
+                       <Text style={styles.textDetail}>CLASSNAME: {className}</Text>
+                   </View>
+                   <View>
+                       <Text style={styles.textDetail}>SUBJECTNAME: {subjectName}</Text>
+                   </View>
+                   <View>
+                       <Text style={styles.textDetail}>IDENTITY: {identity}</Text>
+                   </View> 
+               </View>
+               
+               <View>
+                   <TouchableOpacity disabled={false}  
+                               onPress={
+                                   ()=>setShowModalDetail(false)
+                               }
+                               style={[styles.buttonBack]}>
+                           <Text style={[styles.text]}>Back</Text>
+                   </TouchableOpacity>
+               </View>
+          </View>
+
+
+   </Modal>
+
         {showList ? (
           <FlatList
             data={subjects}
@@ -187,7 +250,9 @@ function App() {
                 <Text>{item.className}</Text>
                 <Image style={styles.logo} source={{ uri: item.logo }} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
+                <Button title="DETAIL" onPress={() =>  getItem(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
+              
               </View>
             )}
             keyExtractor={(item, index) => item.id}
@@ -201,13 +266,47 @@ const styles = StyleSheet.create({
     container: {
         marginTop: 100,
         flex: 1,
-        alignItems: "center",
-        justifyContent: 'center'
+
     },
     logo: {
         width: 50,
         height: 50,
         borderRadius: 50
+    },
+    buttonBack: {
+        width:100,
+        display: 'flex',
+        height: 50,
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#2AC062',
+        shadowColor: '#2AC062',
+        shadowOpacity: 0.4,
+        shadowRadius: 20,
+    },
+    image:{   
+        width:120,
+        height:120,
+     
+    },
+    detail:{
+     
+        width:'100%',
+        height:'100%',
+        backgroundColor: '#CCFFCC',
+        alignItems: 'center'
+    },
+    textDetail:{
+        color:'#000000',
+        padding:8,
+        fontSize:15
+    },
+
+    text: {
+        fontSize: 16,
+        textTransform: 'uppercase',
+        color: '#FFFFFF',
     }
 });
 
