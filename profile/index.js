@@ -9,7 +9,8 @@ import {
     Modal,
     Button,
     TextInput,
-    Picker
+    Picker,
+ 
 } from 'react-native';
 import InfoText from './info-text';
 import SubjectItem from './subject-item';
@@ -49,6 +50,9 @@ export default function Profile() {
     // Tao state kiem soat viec hien thi cua modal add subject
     const [showModal, setShowModal] = useState(false);
 
+
+    
+
     // Khai bao ham thuc hien cong viec xoa
     const handleDeleteSubject = (identity) => {
         // su dung let de co the gan gia tri moi
@@ -61,7 +65,36 @@ export default function Profile() {
         console.log(userProfile);
 
         setUser(userProfile);
+
     }
+      // Khai bao state + ham thay doi gia tri cua modal them subject
+    const [inputSubjectName, setInputSubjectName] = useState('');
+    const [inputSubjectId, setInputSubjectId] = useState('');
+    const [pickerSubjectClass, setPickerSubjectClass] = useState("PT1111");
+
+    const setDefaultValue = () => {
+      setInputSubjectName('');
+      setInputSubjectId('');
+      setPickerSubjectClass('PT1111');
+    }
+    // Tao ham va xu ly viec add subject
+    const handleAddSubject = () => {
+      const newSubject = {
+        name: inputSubjectName,
+        identity: inputSubjectId,
+        className: pickerSubjectClass
+      };
+
+      let newSubjectList = user.subjects;
+      newSubjectList.push(newSubject);
+      userProfile.subjects = newSubjectList;
+
+      setUser(userProfile);
+      setShowModal(false);
+      setDefaultValue();
+    }
+
+    // console.log(user.subjects);
 
     // Khai bao state + ham thay doi gia tri cua modal them subject
     const [inputSubjectName, setInputSubjectName] = useState('');
@@ -173,6 +206,7 @@ export default function Profile() {
               <Picker.Item value="PT1112" label="PT1112" />
               <Picker.Item value="PT1113" label="PT1114" />
             </Picker>
+            <Button title='Submit' onPress={() => {handleAddSubject()}} />
             <Button
               title="Submit"
               onPress={() => {
@@ -185,9 +219,10 @@ export default function Profile() {
                 handleCloseModal();
               }}
             />
-          </View>
-        </Modal>
-      </View>
+    
+       </View>
+       </Modal>
+       </View>
     );
 }
 
