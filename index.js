@@ -1,19 +1,21 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput} from 'react-native';
-import {registerRootComponent} from 'expo'; // higherOrder component
+import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput,TouchableOpacity,ImageBackground} from 'react-native';
+import {registerRootComponent} from 'expo'; 
 
 function App() {
     const [subjects, setSubjects] = useState([]);
     const [showList, setShowList] = useState(true);
     const [showLoading, setShowLoading] = useState(false);
     const [showModal, setShowModal] = useState(false);
-    const [className, setClassName] = useState('');
-    const [subjectName, setSubjectName] = useState('');
-    const [logoURL, setLogoURL] = useState('');
-    const [identity, setIdentity] = useState('');
+    const [name, setName] = useState('');
+    const [category, setCategory] = useState('');
+    const [thumbnail, setThumbnail] = useState('');
+    const [total_chapters, setTotal_chapters] = useState('');
+    const [id, setId] = useState('');
     const [isUpdate, setIsUpdate] = useState(false);
+    const [showModalDetail, setShowModalDetail] = useState(false);
 
-    const API = 'https://5e5a60986a71ea0014e61d88.mockapi.io/api/subjects';
+    const API = 'https://5e63524af48bc60014536aa7.mockapi.io/api/subjects';
     // Dinh nghia ham xu ly cong viec call API
     const fetchSubjects = () => {
         return fetch(
@@ -45,6 +47,26 @@ function App() {
         setSubjects(newSubject);
     }
 
+    const getItemFromAPI=(id)=>{
+        return fetch(
+            API+"/"+id
+        ).then((response)=>response.json())
+        .then((responseJson)=>
+        {setShowModalDetail(true);
+         setSubject(responseJson);
+        console.log(responseJson)})
+        .catch((error)=>console.error(error))
+    }
+
+    const setSubject=(response)=>{
+        setName(response.name);
+        setCategory(response.category);
+        setTotal_chapters(response.total_chapters);
+        setThumbnail(response.thumbnail);
+        setIsUpdate(response.id);
+        setId(response.id)
+    }
+
     const handleDelete = (id) => {
         setShowLoading(true);
         deleteSubject(id);
@@ -59,17 +81,17 @@ function App() {
     }
 
     const setModalData = (data) => {
-        setClassName(data.className);
-        setSubjectName(data.name);
-        setLogoURL(data.logo);
-        setIdentity(data.identity);
+        setName(data.name);
+        setCategory(data.category);
+        setThumbnail(data.thumbnail);
+        setTotal_chapters(data.total_chapters);
         setIsUpdate(data.id); // set isUpdate = id -> neu co id thi se hieu la true, con k co id thi se la undefined -> hieu la false
     }
 
     const handleAddSubject = (responseJson) => {
-        const newSubjects = [...subjects]; // clone subjects, neu clone object -> {...subject}
+        const newSubjects = [...subjects]; 
 
-        return newSubjects.push(responseJson); // return de gan gia tri duoi phan then
+        return newSubjects.push(responseJson);
     }
 
     const handleUpdateSubject = (responseJson) => {
@@ -88,18 +110,12 @@ function App() {
         setShowModal(false);
         // 2. Khai bao subject duoc them moi kem key value
         const subject = {
-            className: className,
-            name: subjectName,
-            logo: logoURL,
-            identity: identity
+            name: name,
+            category: category,
+            thumbnail: thumbnail,
+            total_chapters: total_chapters
         };
-        // const subject = {
-        //     className,
-        //     name: subjectName,
-        //     logo: logoURL,
-        //     identity
-        // };
-        // 3. Call API de them subject vao db tren server
+        
         const api = isUpdate ? `${API}/${isUpdate}` : API;
         fetch(
             api,
@@ -126,10 +142,10 @@ function App() {
         .catch((error) => console.log(`ERROR: ${error}`));
 
         setModalData({
-            className: '',
             name: '',
-            logo: '',
-            identity: ''
+            category: '',
+            thumbnail: '',
+            total_chapters: ''
         });
     }
 
@@ -139,6 +155,8 @@ function App() {
         setModalData(subject);
         setShowModal(true);
     }
+
+
 
     const handleCancle = () => {
         setShowModal(false);
@@ -154,22 +172,60 @@ function App() {
                 : null
         }
         <Button title='ADD SUBJECT' onPress={() => setShowModal(true)} />
+        <Modal visible={showModalDetail}>
+                <View style={styles.container_detail}>
+                    <View style={styles.image} >
+                        <Image style={styles.image} source={{uri:thumbnail}} />
+                    </View>
+                    <View>
+                        <View >
+                            <Text style={styles.textDetail}>ID: {id}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.textDetail}>Name: {name}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.textDetail}>Catogery: {category}</Text>
+                        </View>
+                        <View>
+                            <Text style={styles.textDetail}>Total chapters: {total_chapters}</Text>
+                        </View> 
+                    </View>
+                    
+
+
+
+                    <View style={styles.containerButton}>
+                        <TouchableOpacity disabled={false}  
+                                    onPress={
+                                        ()=>setShowModalDetail(false)
+                                    }
+                                    style={[styles.button]}>
+                                <Text style={[styles.text]}>Back</Text>
+
+                        </TouchableOpacity>
+                    </View>
+               </View>
+
+        </Modal>
+
+
         <Modal visible={showModal} >
             <View>
                 <Text>Class Name</Text>
-                <TextInput value={className} onChangeText={(value) => setClassName(value)} />
+                <TextInput value={name} onChangeText={(value) => setName(value)} />
             </View>
             <View>
                 <Text>Subject Name</Text>
-                <TextInput value={subjectName} onChangeText={(value) => setSubjectName(value)} />
+                <TextInput value={category} onChangeText={(value) => setCategory(value)} />
             </View>
             <View>
                 <Text>Logo (Input Image URL)</Text>
-                <TextInput value={logoURL} onChangeText={(value) => setLogoURL(value)} />
+                <TextInput value={thumbnail} onChangeText={(value) => setThumbnail(value)} />
             </View>
             <View>
                 <Text>identity</Text>
-                <TextInput value={identity} onChangeText={(value) => setIdentity(value)} />
+                <TextInput value={total_chapters} onChangeText={(value) => setTotal_chapters(value)} />
             </View>
             <View>
                 <Button title='SUBMIT' onPress={() => handleSubmit()} />
@@ -182,12 +238,13 @@ function App() {
             renderItem={({ item }) => (
               <View>
                 <Text>{item.id}</Text>
-                <Text>{item.identity}</Text>
+                <Text>{item.total_chapters}</Text>
                 <Text>{item.name}</Text>
-                <Text>{item.className}</Text>
-                <Image style={styles.logo} source={{ uri: item.logo }} />
+                <Text>{item.category}</Text>
+                <Image style={styles.logo} source={{ uri: item.thumbnail }} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
+                <Button title="DETAIL" onPress={() =>  getItemFromAPI(item.id)} />
               </View>
             )}
             keyExtractor={(item, index) => item.id}
@@ -208,6 +265,43 @@ const styles = StyleSheet.create({
         width: 50,
         height: 50,
         borderRadius: 50
+    },
+    button: {
+        width:100,
+        display: 'flex',
+        height: 50,
+        borderRadius: 40,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: '#2AC062',
+        shadowColor: '#2AC062',
+        shadowOpacity: 0.4,
+        shadowOffset: { height: 10, width: 0 },
+        shadowRadius: 20,
+    },
+    image:{   
+      
+        borderRadius:60,
+        width:120,
+        height:120
+    },
+    container_detail:{
+        
+        width:'100%',
+        height:'100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    textDetail:{
+        color:'black',
+        padding:8,
+        fontSize:15
+    },
+
+    text: {
+        fontSize: 16,
+        textTransform: 'uppercase',
+        color: '#FFFFFF',
     }
 });
 
