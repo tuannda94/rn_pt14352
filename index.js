@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput} from 'react-native';
+import {View, Text, StyleSheet, FlatList, Image, Switch, Button, Modal, TextInput,TouchableHighlight} from 'react-native';
 import {registerRootComponent} from 'expo'; // higherOrder component
 
 function App() {
@@ -140,7 +140,7 @@ function App() {
             API+"/"+id
         ).then((response)=>response.json())
         .then((responseJson)=>
-        {setShowModalDetail(true);
+        {setShowDetail(true);
          setSubject(responseJson);
         console.log(responseJson)})
         .catch((error)=>console.error(error))
@@ -201,29 +201,10 @@ function App() {
             </View>
         </Modal>
         <Modal visible={showDetail} >
-            <View>
-                <Text>Class Name</Text>
-                <TextInput value={className} onChangeText={(value) => setClassName(value)} />
-            </View>
-            <View>
-                <Text>Subject Name</Text>
-                <TextInput value={subjectName} onChangeText={(value) => setSubjectName(value)} />
-            </View>
-            <View>
-                <Text>Logo (Input Image URL)</Text>
-                <TextInput value={logoURL} onChangeText={(value) => setLogoURL(value)} />
-            </View>
-            <View>
-                <Text>identity</Text>
-                <TextInput value={identity} onChangeText={(value) => setIdentity(value)} />
-            </View>
-            <View>
-               
-                <Button title='CANCLE' onPress={() => handleCancle()} />
-            </View>
+           
             <View style={style.colum}>
                     <View style={style.viewboder1} >
-                        < Image style={style.imgmodel} source={{ uri: item.img }} />
+                        < Image style={style.imgmodel} source={{ uri:logoURL }} />
                     </View>
                     <View style={style.item1} >
                         <View  >
@@ -237,7 +218,7 @@ function App() {
                         <TouchableHighlight
                             style={style.submit}
                             onPress={() => { handleCancle()}}>
-                            <Text style={style.submitText}>Not detail</Text>
+                            <Text style={style.submitText}>CANCLE</Text>
                         </TouchableHighlight>
                     </View>
                 </View>
