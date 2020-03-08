@@ -198,7 +198,7 @@ function App() {
             </Modal>
             <Modal visible={isShowDetail}>
                 <View style={detailStyle.toolbar}>
-                    <TouchableOpacity activeOpacity={0.7} onPress={() => setShowDetail(false)}><Image style={detailStyle.imgBack} source={require("./back.png")} /></TouchableOpacity>
+                    <TouchableOpacity activeOpacity={0.7} onPress={() => setShowDetail(false)}><Image style={detailStyle.imgBack} source={{uri:"https://www.nicepng.com/png/full/266-2660273_expand-slideshow-white-back-icon-png.png"}} /></TouchableOpacity>
                     <Text style={detailStyle.title}>{currentSubject.className}</Text>
                 </View>
                 <View>
