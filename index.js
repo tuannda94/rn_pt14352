@@ -188,6 +188,11 @@ function App() {
                 <Image style={styles.logo} source={{ uri: item.logo }} />
                 <Button title='EDIT' onPress={() => showEditModal(item.id)} />
                 <Button title="DELETE" onPress={() => handleDelete(item.id)} />
+                <Button title="EDIT" />
+                <Button title="DETAIL" />
+                <Button title="DEMO" />
+                <Button title="DEMO2" />
+                <Button title="DEMO3" />
               </View>
             )}
             keyExtractor={(item, index) => item.id}
