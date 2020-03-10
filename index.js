@@ -155,7 +155,7 @@ setShowComic(false);
 const handleUpdateComic = (responseJson) => {
   const newComics = [...comics];
   // Tim vi tri item bi thay doi
-  const updateSubjectIndex = newComics.findIndex(item => item.id = responseJson.id);
+  const updateSubjectIndex = newComics.findIndex(item => item.id === responseJson.id);
   // Gan item moi cho vi tri do trong array
 Console.log(updateSubjectIndex);
   newComics[updateSubjectIndex] = responseJson;
